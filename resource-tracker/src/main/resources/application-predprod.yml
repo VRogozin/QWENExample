@@ -1,0 +1,63 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://predprod-db:5432/resource_tracker
+    username: ${DB_USERNAME:resourcetracker}
+    password: ${DB_PASSWORD:changeme}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+
+# Security settings for pre-production
+security:
+  jwt:
+    secret-key: ${JWT_SECRET:AReallyLongAndSecurePreProdSecretKeyThatShouldBeChanged}
+    expiration-time: 7200000 # 2 hours
+
+# Application-specific settings for pre-production
+resource-tracker:
+  max-concurrent-users: 25
+  report-generation:
+    pdf-enabled: true
+    xlsx-enabled: true
+    pivot-table-support: true
+  openshift:
+    namespace: resource-tracker-predprod
+    deployment-strategy: rolling-update
+
+# Monitoring and logging
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    git:
+      mode: simple
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.platform.resourcetracker: WARN
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ./logs/resource-tracker-predprod.log
+    max-size: 100MB
+    max-history: 30
