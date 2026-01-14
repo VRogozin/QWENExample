@@ -1,0 +1,39 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+# Disable security for testing
+security:
+  basic:
+    enabled: false
+
+# Application-specific settings for testing
+resource-tracker:
+  max-concurrent-users: 5
+  report-generation:
+    pdf-enabled: true
+    xlsx-enabled: true
+    pivot-table-support: false
+
+logging:
+  level:
+    com.platform.resourcetracker: INFO
+    org.springframework.security: INFO
+    org.springframework.web: INFO
